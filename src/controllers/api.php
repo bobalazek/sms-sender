@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-$app->get('/api/sms', function () use ($app) {
+$app->get('/api/send', function () use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
@@ -55,9 +55,9 @@ $app->get('/api/sms', function () use ($app) {
     return $app->json([
         'success' => true,
     ]);
-})->bind('api.send_sms');
+})->bind('api.send');
 
-$app->get('/api/process', function () use ($app) {
+$app->get('/api/queue/next', function () use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
@@ -67,7 +67,43 @@ $app->get('/api/process', function () use ($app) {
         ]);
     }
 
-    // TODO
+    $statement = $app['db']->prepare(
+        'SELECT * FROM smses
+            WHERE status="queued"
+            ORDER BY created_at ASC'
+    );
+    $statement->execute();
+    $smses = $statement->fetchAll();
+
+    return $app->json([
+        'success' => true,
+        'data' => !empty($smses)
+            ? $smses[0]
+            : [],
+    ]);
+})->bind('api.queue.next');
+
+$app->get('/api/process/{id}', function ($id) use ($app) {
+    $token = $request->query->get('token');
+    if ($token !== $app['config.token']) {
+        return $app->json([
+            'error' => [
+                'message' => 'Invalid token.',
+            ],
+        ]);
+    }
+
+    $app['db']->update(
+        'smses',
+        [
+            'status' => 'processed',
+            'updated_at' => date(DATE_ATOM),
+            'processed_at' => date(DATE_ATOM),
+        ],
+        [
+            'id' => $id,
+        ]
+    );
 
     return $app->json([
         'success' => true,
