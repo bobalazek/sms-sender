@@ -8,4 +8,5 @@ $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/prod.php';
 require __DIR__.'/../src/controllers.php';
 require __DIR__.'/../src/controllers/api.php';
+require __DIR__.'/../src/controllers/database.php';
 $app->run();

@@ -20,6 +20,7 @@ class controllersTest extends WebTestCase
         require __DIR__.'/../config/dev.php';
         require __DIR__.'/../src/controllers.php';
         require __DIR__.'/../src/controllers/api.php';
+        require __DIR__.'/../src/controllers/database.php';
         $app['session.test'] = true;
 
         return $this->app = $app;
