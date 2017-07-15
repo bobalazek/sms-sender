@@ -41,14 +41,17 @@ var app = {
                 if (data.error) {
                     app.handleFail(data.error.message);
                 } else {
-                    app.handleSuccess();
+                    app.handleSuccess(
+                        data.data.url,
+                        data.data.token
+                    );
                 }
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 app.handleFail(textStatus);
             });
     },
-    handleSuccess: function() {
+    handleSuccess: function(url, token) {
         app.isConnected = true;
         app.url = url;
         app.token = token;
@@ -67,9 +70,9 @@ var app = {
         app.token = null;
         
         $('#connection-status')
-            .removeClass('label-danger')
-            .addClass('label-success')
-            .text('Connected')
+            .removeClass('label-success')
+            .addClass('label-danger')
+            .text('Not connected')
         ;
         
         app.addLog('Error: ' + error);
