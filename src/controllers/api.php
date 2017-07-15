@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-$app->get('/api/ping', function () use ($app) {
+$app->get('/api/ping', function (Request $request) use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
@@ -17,7 +17,7 @@ $app->get('/api/ping', function () use ($app) {
     ]);
 })->bind('api.ping');
 
-$app->get('/api/send', function () use ($app) {
+$app->get('/api/send', function (Request $request) use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
@@ -63,7 +63,7 @@ $app->get('/api/send', function () use ($app) {
     ]);
 })->bind('api.send');
 
-$app->get('/api/queue/next', function () use ($app) {
+$app->get('/api/queue/next', function (Request $request) use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
@@ -89,7 +89,7 @@ $app->get('/api/queue/next', function () use ($app) {
     ]);
 })->bind('api.queue.next');
 
-$app->get('/api/process/{id}', function ($id) use ($app) {
+$app->get('/api/process/{id}', function ($id, Request $request) use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
         return $app->json([
