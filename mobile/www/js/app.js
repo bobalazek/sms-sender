@@ -36,33 +36,45 @@ var app = {
             return false;
         }
 
-        $.get(url + '/api/ping', function(response) {
-            if (response.success) {
-                app.isConnected = true;
-                app.url = url;
-                app.token = token;
-                
-                $('#connection-status')
-                    .removeClass('label-danger')
-                    .addClass('label-success')
-                    .text('Connected')
-                ;
-                
-                app.addLog('Connected to the server.');
-            } else {
-                app.isConnected = false;
-                app.url = null;
-                app.token = null;
-                
-                $('#connection-status')
-                    .removeClass('label-success')
-                    .addClass('label-danger')
-                    .text('Not connected')
-                ;
-                
-                app.addLog('Could not connect to the server.');
-            }
-        });
+        $.get(url + '/api/ping')
+            .done(function(data, textStatus, jqXHR) {
+                if (data.error) {
+                    app.handleFail(data.error.message);
+                } else {
+                    app.handleSuccess();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                app.handleFail(textStatus);
+            });
+    },
+    handleSuccess: function() {
+        app.isConnected = true;
+        app.url = url;
+        app.token = token;
+        
+        $('#connection-status')
+            .removeClass('label-danger')
+            .addClass('label-success')
+            .text('Connected')
+        ;
+        
+        app.addLog('Connected to the server.');
+    },
+    handleFail: function(error) {
+        app.isConnected = false;
+        app.url = null;
+        app.token = null;
+        
+        $('#connection-status')
+            .removeClass('label-danger')
+            .addClass('label-success')
+            .text('Connected')
+        ;
+        
+        app.addLog('Error: ' + error);
+        
+        alert(error);
     },
     addLog: function(text) {
         var $log = $('#log');
