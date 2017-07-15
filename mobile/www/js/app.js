@@ -36,14 +36,14 @@ var app = {
             return false;
         }
 
-        $.get(url + '/api/ping')
+        $.get(url + '/api/ping?token=' + token)
             .done(function(data, textStatus, jqXHR) {
                 if (data.error) {
                     app.handleFail(data.error.message);
                 } else {
                     app.handleSuccess(
-                        data.data.url,
-                        data.data.token
+                        url,
+                        token
                     );
                 }
             })
@@ -90,14 +90,20 @@ var app = {
     processQueue: function() {
         app.addLog('Started processing the queue ...');
         
-        $.get(app.url + '/api/queue/next', function(response) {
-            var data = response.data;
-            if (data === null) {
-                app.addLog('No new SMSes found.');
-            } else {
-                app.sendSMS(data);
+        $.get(
+            app.url + '/api/queue/next?token=' + app.token,
+            function(data) {
+                if (data.error) {
+                    app.addLog('Error: ' + data.error.message);
+                } else {
+                    if (data.data === null) {
+                        app.addLog('No new SMSes found.');
+                    } else {
+                        app.sendSMS(data.data);
+                    }
+                }    
             }
-        });
+        );
     },
     sendSMS: function(data) {
         var options = {
@@ -114,7 +120,11 @@ var app = {
             function() {
                 app.addLog('Successfully sent the SMS.');
 
-                $.get(app.url + '/api/process/' + data.id);
+                $.get(
+                    app.url +
+                    '/api/process/' + data.id +
+                    '?token=' + app.token
+                );
             },
             function() {
                 app.addLog('Could not send the SMS.');
