@@ -12,7 +12,7 @@ var app = {
     token: null,
     processInterval: 15000,
     onDeviceReady: function() {
-        $('#connect-button').on('click', app.checkStatus);
+        $('#connect-button').on('click', app.clickConnectButton);
 
         setInterval(function() {
             if (app.isConnected) {
@@ -20,7 +20,13 @@ var app = {
             }
         }, app.processInterval);
     },
-    checkStatus: function() {
+    clickConnectButton: function() {
+        if (app.isConnected) {
+            app.handleFail('Disconnected.');
+
+            return false;
+        }
+
         var url = $('#url-input').val();
         var token = $('#token-input').val();
         
@@ -39,7 +45,9 @@ var app = {
         $.get(url + '/api/ping?token=' + token)
             .done(function(data, textStatus, jqXHR) {
                 if (data.error) {
-                    app.handleFail(data.error.message);
+                    app.handleFail(
+                        'Error: ' + data.error.message
+                    );
                 } else {
                     app.handleSuccess(
                         url,
@@ -48,36 +56,48 @@ var app = {
                 }
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
-                app.handleFail(textStatus);
+                app.handleFail(
+                    'Error: ' + textStatus
+                );
             });
+
+        return true;
     },
     handleSuccess: function(url, token) {
         app.isConnected = true;
         app.url = url;
         app.token = token;
-        
+
         $('#connection-status')
             .removeClass('label-danger')
             .addClass('label-success')
             .text('Connected')
         ;
-        
+        $('#connect-button')
+            .removeClass('btn-primary')
+            .addClass('btn-danger')
+            .text('Disconnect')
+        ;
+
         app.addLog('Connected to the server.');
     },
-    handleFail: function(error) {
+    handleFail: function(message) {
         app.isConnected = false;
         app.url = null;
         app.token = null;
-        
+
         $('#connection-status')
             .removeClass('label-success')
             .addClass('label-danger')
             .text('Not connected')
         ;
-        
-        app.addLog('Error: ' + error);
-        
-        alert(error);
+        $('#connect-button')
+            .removeClass('btn-danger')
+            .addClass('btn-primary')
+            .text('Connect')
+        ;
+
+        app.addLog(message);
     },
     addLog: function(text) {
         var $log = $('#log');
@@ -89,7 +109,7 @@ var app = {
     },
     processQueue: function() {
         app.addLog('Started processing the queue ...');
-        
+
         $.get(
             app.url + '/api/queue/next?token=' + app.token,
             function(data) {
