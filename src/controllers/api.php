@@ -2,6 +2,21 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
+$app->get('/api/ping', function () use ($app) {
+    $token = $request->query->get('token');
+    if ($token !== $app['config.token']) {
+        return $app->json([
+            'error' => [
+                'message' => 'Invalid token.',
+            ],
+        ]);
+    }
+    
+    return $app->json([
+        'success' => true,
+    ]);
+})->bind('api.ping');
+
 $app->get('/api/send', function () use ($app) {
     $token = $request->query->get('token');
     if ($token !== $app['config.token']) {
@@ -13,18 +28,10 @@ $app->get('/api/send', function () use ($app) {
     }
 
     // Data
-    $from = $request->query->get('from');
     $to = $request->query->get('to');
     $message = $request->query->get('message');
 
     // Validation
-    if (empty($from)) {
-        return $app->json([
-            'error' => [
-                'message' => 'Please specify the "from" parameter.',
-            ],
-        ]);
-    }
     if (empty($to)) {
         return $app->json([
             'error' => [
@@ -43,7 +50,6 @@ $app->get('/api/send', function () use ($app) {
     $app['db']->insert(
         'smses',
         [
-            'from' => $from,
             'to' => $to,
             'message' => $message,
             'status' => 'queued',
@@ -79,7 +85,7 @@ $app->get('/api/queue/next', function () use ($app) {
         'success' => true,
         'data' => !empty($smses)
             ? $smses[0]
-            : [],
+            : null,
     ]);
 })->bind('api.queue.next');
 

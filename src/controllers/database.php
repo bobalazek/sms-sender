@@ -29,7 +29,6 @@ $app->get('/database/create', function (Request $request) use ($app) {
         $smsesTable->setPrimaryKey(['id']);
 
         $smsesTable->addColumn('status', 'string', ['length' => 32]);
-        $smsesTable->addColumn('from', 'string', ['length' => 255]);
         $smsesTable->addColumn('to', 'string', ['length' => 255]);
         $smsesTable->addColumn('message', 'text');
 
