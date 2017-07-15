@@ -106,6 +106,12 @@ var app = {
         app.log.push(row);
 
         $log.prepend('<p>' + row + '</p>');
+        
+        $log.find('p').each(function(index) {
+            if (index > 15) {
+                $(this).remove();
+            }
+        });
     },
     processQueue: function() {
         app.addLog('Started processing the queue ...');
