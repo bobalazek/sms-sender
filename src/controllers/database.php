@@ -34,7 +34,10 @@ $app->get('/database/create', function (Request $request) use ($app) {
 
         $smsesTable->addColumn('created_at', 'string', ['length' => 32]);
         $smsesTable->addColumn('updated_at', 'string', ['length' => 32]);
-        $smsesTable->addColumn('processed_at', 'string', ['length' => 32]);
+        $smsesTable->addColumn('processed_at', 'string', [
+            'length' => 32,
+            'notnull' => false,
+        ]);
 
         $schema->createTable($smsesTable);
     }

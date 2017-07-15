@@ -50,7 +50,7 @@ $app->get('/api/send', function (Request $request) use ($app) {
     $app['db']->insert(
         'smses',
         [
-            'to' => $to,
+            '`to`' => $to,
             'message' => $message,
             'status' => 'queued',
             'created_at' => date(DATE_ATOM),
