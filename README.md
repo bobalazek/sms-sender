@@ -9,7 +9,7 @@ A home-made API for sending SMS. Meant for development purposes.
 
 * Inside `config/prod.php` you should change your token to something unique
 * First you'll need to create the (SQLite) database. For that, go to `http://[MY-IP]/sms-sender/web/database/create?token=[YOUR-TOKEN]`
-* To send the SMS, go to the following page: `http://[MY-IP]/sms-sender/web/api/send?token=[YOUR-TOKEN]&to=+122111222&message=Hello+World`
+* To send the SMS, go to the following page: `http://[MY-IP]/sms-sender/web/api/send?token=[YOUR-TOKEN]&to=+122111222&message=Hello+World` (in a real world scenario, you will rather make an AJAX request to that page)
 
 ### Mobile
 
