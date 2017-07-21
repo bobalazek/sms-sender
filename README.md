@@ -1,6 +1,6 @@
-# SMS Sender - Web
+# SMS Sender
 
-The web app for the SMS sender.
+A home-made API for sending SMS. Meant for development purposes.
 
 
 ## Usage
@@ -32,6 +32,10 @@ The web app for the SMS sender.
 
 **THIS IS ONLY MEANT FOR DEVELOPMENT. USE IT WITH CAUTION. CARRIER FEES WILL APPLY. TO BE SAFE, ONLY EVER USE THIS WITH PREPAID SIM CARDS / PACKAGES!**
 
+> The idea behind this project was, me having a prepaid SIM card, that I used for testing before.
+> Then I started working on some Two-Factor authentication stuff, which (at least apart of it) was also the SMS confirmation/authorization.
+> So for that reason (& because it was the cheapest option), I quickly wrote this app to assist me with the project.
+> For production projects, you should probably rather use actual SMS services, such as [Twilio](https://www.twilio.com), [plivo](https://www.plivo.com), [smsglobal](http://smsglobal.com), or any other SMS service.
 
 ## License
 
